@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here.
+# Expenses views.
 
 def index(request):
     return render(request, 'expenses/index.html')
