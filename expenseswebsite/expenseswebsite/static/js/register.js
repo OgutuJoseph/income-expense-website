@@ -1,8 +1,9 @@
 const usernameField = document.querySelector('#usernameField')
 const emailField = document.querySelector('#emailField')
-const feedbackArea = document.querySelector('.invalid_feedback_class')
+const feedbackArea = document.querySelector('.invalid_feedback__username_class')
 const emailFeedbackArea = document.querySelector('.invalid_email_feedback_class')
 const usernameSuccessOutput = document.querySelector('.username_success_output')
+const emailSuccessOutput = document.querySelector('.email_success_output')
 
 usernameField.addEventListener("keyup", (e) => {
     console.log('7777', 7777)
@@ -10,7 +11,7 @@ usernameField.addEventListener("keyup", (e) => {
     console.log('usernameVal', usernameVal)
 
     usernameSuccessOutput.style.display = 'block';
-    usernameSuccessOutput.textContent = `Checking :: ${usernameVal}`;
+    usernameSuccessOutput.textContent = `Checking Username :: ${usernameVal}`;
 
     usernameField.classList.remove('is-invalid');
     feedbackArea.style.display = 'none';
@@ -38,6 +39,9 @@ usernameField.addEventListener("keyup", (e) => {
 emailField.addEventListener("keyup", (e) => {
     console.log('8888', 8888)
     const emailVal = e.target.value;
+    
+    emailSuccessOutput.style.display = 'block';
+    emailSuccessOutput.textContent = `Checking Email :: ${emailVal}`;
 
     emailField.classList.remove('is-invalid');
     emailFeedbackArea.style.display = 'none';
@@ -49,6 +53,7 @@ emailField.addEventListener("keyup", (e) => {
         })
         .then((res) => res.json())
         .then((data) => {
+            emailSuccessOutput.style.display = 'none';
             if (data.email_error){
                 emailField.classList.add('is-invalid');
                 emailFeedbackArea.style.display = 'block';
