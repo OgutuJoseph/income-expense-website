@@ -67,11 +67,11 @@ emailField.addEventListener("keyup", (e) => {
 });
 
 const handleToggleInput = (e) => {
-    if (showPasswordToggle.textContent === "SHOW"){
-        showPasswordToggle.textContent = "HIDE"
+    if (showPasswordToggle.textContent === "Show Password"){
+        showPasswordToggle.textContent = "Hide"
         passwordField.setAttribute('type', 'text');
     } else {
-        showPasswordToggle.textContent = "SHOW"
+        showPasswordToggle.textContent = "Show Password"
         passwordField.setAttribute('type', 'password');
     }
 }
