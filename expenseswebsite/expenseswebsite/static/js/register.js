@@ -6,6 +6,7 @@ const emailFeedbackArea = document.querySelector('.invalid_email_feedback_class'
 const usernameSuccessOutput = document.querySelector('.username_success_output')
 const emailSuccessOutput = document.querySelector('.email_success_output')
 const showPasswordToggle = document.querySelector('.show_password_toggle')
+const submitBtn = document.querySelector('.submit_btn')
 
 usernameField.addEventListener("keyup", (e) => {
     console.log('7777', 7777)
@@ -31,6 +32,11 @@ usernameField.addEventListener("keyup", (e) => {
                 usernameField.classList.add('is-invalid');
                 feedbackArea.style.display = 'block';
                 feedbackArea.innerHTML = `<p>${data.username_error}</p>`;
+                // submitBtn.setAttribute('disabled', 'disabled')
+                submitBtn.disabled = true;
+            } else {
+                // submitBtn.removeAttribute('disbaled')
+                submitBtn.disabled = false;
             }
         });
     }
@@ -60,6 +66,9 @@ emailField.addEventListener("keyup", (e) => {
                 emailField.classList.add('is-invalid');
                 emailFeedbackArea.style.display = 'block';
                 emailFeedbackArea.innerHTML = `<p>${data.email_error}</p>`;
+                submitBtn.disabled = true;
+            } else {                
+                submitBtn.disabled = false;
             }
         });
     }
