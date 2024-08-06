@@ -5,7 +5,13 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
+from django.core.mail import EmailMessage
+import logging
+from smtplib import SMTPException
 
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 # Authentication views.
 
 class RegistrationView(View):
@@ -35,10 +41,28 @@ class RegistrationView(View):
                     messages.error(request, 'Password too short.')
                     return render(request, 'authentication/register.html', context)
                 
-                # Create a User Account
+                # Create a user account
                 user = User.objects.create_user(username=usernameInput, email=emailInput)
                 user.set_password(passwordInput)
+                user.is_active = False
                 user.save()
+
+                # Send confirmation email
+                email_subject = 'Activate your account'
+                email_body = 'Please activate your account.'
+
+                email = EmailMessage(
+                    email_subject,
+                    email_body,
+                    'noreply@expenseswebsite.com',
+                    [emailInput]
+                )
+
+                ''' Option W/O Logging '''
+                email.send(fail_silently=False)
+
+                
+
                 messages.success(request, 'User registered successfully.')
                 return render(request, 'authentication/register.html')
             else:
