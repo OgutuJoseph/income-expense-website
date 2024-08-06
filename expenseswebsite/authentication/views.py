@@ -10,7 +10,7 @@ import logging
 from smtplib import SMTPException
 
 from django.urls import reverse
-from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import token_generator
@@ -84,7 +84,7 @@ class RegistrationView(View):
                 messages.success(request, 'User registered successfully.')
                 return render(request, 'authentication/register.html')
             else:
-                print("User exisrs")
+                print("User exists.")
         else:
             print("User already registered with username in the system.")
 
@@ -116,7 +116,32 @@ class EmailValidationView(View):
             return JsonResponse({'email_error': 'Email already in use. Choose another one.'},status=409)
         return JsonResponse({'email_valid':True})
 
-
 class VerificationView(View):
     def get(self, request, uidb64, token):
+
+
+        try:
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=id)
+
+            # if token is not valid, meaning has already been used
+            if not token_generator.check_token(user, token):
+                return redirect('login'+'?message='+'User already activated')
+
+            # if user is not yet active, activate user, else route to login
+            if user.is_active:
+                return redirect('login')            
+            user.is_active = True
+            user.save()
+
+            messages.success('Account activated successfully.')
+            return redirect('login')
+
+        except Exception as ex:
+            pass
+
         return redirect('login')
+
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'authentication/login.html')
