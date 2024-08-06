@@ -134,7 +134,7 @@ class VerificationView(View):
             user.is_active = True
             user.save()
 
-            messages.success('Account activated successfully.')
+            messages.success(request, 'Account activated successfully.')
             return redirect('login')
 
         except Exception as ex:
