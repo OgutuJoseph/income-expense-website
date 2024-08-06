@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>All Expenses</h1>
 
-<ul class="list-group">
-    <li class="list-group-item">Bought One</li>
-    <li class="list-group-item">Bought Two</li>
-    <li class="list-group-item">Bought Three</li>
-    <li class="list-group-item">Bought Four</li>
-    <li class="list-group-item">Bought Five</li>
-    <li class="list-group-item">Bought Six</li>
-    <li class="list-group-item">Bought Seven</li>
-</ul>
+{% include 'partials/_messages.html' %}
+
+<div class="container">
+    <h1>All Expenses</h1>
+    <ul class="list-group">
+        <li class="list-group-item">Bought One</li>
+        <li class="list-group-item">Bought Two</li>
+        <li class="list-group-item">Bought Three</li>
+        <li class="list-group-item">Bought Four</li>
+        <li class="list-group-item">Bought Five</li>
+        <li class="list-group-item">Bought Six</li>
+        <li class="list-group-item">Bought Seven</li>
+    </ul>
+</div>
 {% endblock %}
