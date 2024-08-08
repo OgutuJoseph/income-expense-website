@@ -63,7 +63,7 @@ class RegistrationView(View):
                 uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
 
                 ### - relative url for verification (reset password)
-                link = reverse('activate', kwargs={'uidb64':uidb64, 'token':token_generator.make_token(user)})
+                link = reverse('activateUrl', kwargs={'uidb64':uidb64, 'token':token_generator.make_token(user)})
                 activate_url = 'http://'+domain+link
                 
                 # Send confirmation email
@@ -127,21 +127,21 @@ class VerificationView(View):
 
             # if token is not valid, meaning has already been used
             if not token_generator.check_token(user, token):
-                return redirect('login'+'?message='+'User already activated')
+                return redirect('loginUrl'+'?message='+'User already activated')
 
             # if user is not yet active, activate user, else route to login
             if user.is_active:
-                return redirect('login')            
+                return redirect('loginUrl')            
             user.is_active = True
             user.save()
 
             messages.success(request, 'Account activated successfully.')
-            return redirect('login')
+            return redirect('loginUrl')
 
         except Exception as ex:
             pass
 
-        return redirect('login')
+        return redirect('loginUrl')
 
 class LoginView(View):
     def get(self, request):
@@ -158,7 +158,7 @@ class LoginView(View):
                 if user.is_active:
                     auth.login(request, user)
                     messages.success(request, 'Welcome, ' + user.username + '. ' + 'You are now logged in.')
-                    return redirect('expenses')
+                    return redirect('expensesUrl')
 
                 messages.error(request, 'Account is not active. Please check your mailbox for account activation email.')
                 return render(request, 'authentication/login.html')
@@ -174,4 +174,4 @@ class LogoutView(View):
     def post(self, request):
         auth.logout(request)
         messages.info(request, 'You have been logged out.')
-        return redirect('login')
+        return redirect('loginUrl')

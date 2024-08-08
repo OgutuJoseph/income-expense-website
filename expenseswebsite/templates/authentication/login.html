@@ -13,7 +13,7 @@
             <div class="card-body">
                 <h4>Login</h4>
 
-                <form action="{% url 'login' %}" method="post">
+                <form action="{% url 'loginUrl' %}" method="post">
                     {% csrf_token %}
                     {% include 'partials/_messages.html' %}
                     <div class="form-group mt-4">
