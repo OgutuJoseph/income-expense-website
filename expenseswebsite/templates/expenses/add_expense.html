@@ -1,4 +1,43 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h1>Add Expense</h1>
+
+<div class="container mt-2">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'expensesUrl' %}" style="text-decoration: none;">Expenses</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add Expenses</li>
+        </ul>
+    </nav>
+    <h1>Add Expense</h1>
+    <div class="card">
+        <div class="card-body">
+            <form action="{% url 'addExpensesUrl' %}" method="POST">
+                {% csrf_token %}
+                {% include 'partials/_messages.html' %}
+
+                <div class="form-group p-3 col-sm-6">
+                    <label for="">Amount</label>
+                    <input type="number" class="form-control" name="amount" value="{{ values.amount }}" />
+                </div>
+                <div class="form-group p-3 col-sm-6">
+                    <label for="">Descrition</label>
+                    <input type="text" class="form-control" name="description" value="{{ values.description}}" />
+                </div>
+                <div class="form-group p-3 col-sm-6">
+                    <label for="">Category</label>
+                    <select name="category" class="form-control">
+                        {% for category in categorySet %}
+                            <option name="category" value="{{ category.name }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group p-3 col-sm-6">
+                    <label for="">Date of Expense</label>
+                    <input type="date" class="form-control" name="expense_date" value="{{ values.date }}" />
+                </div>
+                <input type="submit" valus="Submit" class="btn btn-success" />
+            </form>    
+        </div>    
+    </div>
 {% endblock%}
