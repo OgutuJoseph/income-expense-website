@@ -28,9 +28,9 @@ def add_expense(request):
 
     if request.method == 'POST':
         amountInput = request.POST['amount']
-        descriptionInput  =request.POST['description']
-        categoryInput  =request.POST['category']
-        dateInput  =request.POST['expense_date']
+        descriptionInput  = request.POST['description']
+        categoryInput  = request.POST['category']
+        dateInput  = request.POST['expense_date']
 
         if not amountInput:
             messages.error(request, 'Amount field is required')
@@ -44,7 +44,41 @@ def add_expense(request):
             description = descriptionInput,
             category = categoryInput,
             date = dateInput,
-            owner  =request.user
+            owner  = request.user
         )
         messages.success(request, 'Expense added successfully.')
+        return redirect('expensesUrl')
+
+@login_required(login_url='authentication/login')
+def edit_expense(request, id):
+    expense = Expense.objects.get(pk=id)
+    categories = Category.objects.all()
+    context = {
+            'expense': expense,
+            'values': expense,
+            'categorySet' : categories,
+        }
+    
+    if request.method == 'GET':
+        return render(request, 'expenses/edit_expense.html', context)        
+    if request.method == 'POST':
+        amountInput = request.POST['amount']
+        descriptionInput  = request.POST['description']
+        categoryInput  = request.POST['category']
+        dateInput  = request.POST['expense_date']
+
+        if not amountInput:
+            messages.error(request, 'Amount field is required')
+            return render(request, 'expenses/edit_expense.html', context)
+        if not descriptionInput:
+            messages.error(request, 'Description field is required')
+            return render(request, 'expenses/edit_expense.html', context)
+
+        expense.amount = amountInput
+        expense.description = descriptionInput
+        expense.category = categoryInput
+        expense.date = dateInput
+        expense.owner  = request.user
+        expense.save()
+        messages.success(request, 'Expense updated successfully.')
         return redirect('expensesUrl')

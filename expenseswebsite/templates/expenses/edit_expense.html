@@ -9,10 +9,10 @@
             <li class="breadcrumb-item active" aria-current="page">Add Expenses</li>
         </ul>
     </nav>
-    <h1>Add Expense</h1>
+    <h1>Edit Expense</h1>
     <div class="card">
         <div class="card-body">
-            <form action="{% url 'addExpensesUrl' %}" method="POST">
+            <form action="{% url 'editExpensesUrl' expense.id %}" method="POST">
                 {% csrf_token %}
                 {% include 'partials/_messages.html' %}
 
@@ -27,6 +27,7 @@
                 <div class="form-group p-3 col-sm-6">
                     <label for="">Category</label>
                     <select name="category" class="form-control">
+                        <option selected name="category" value="{{ values.category }}">{{ values.category }}</option>
                         {% for category in categorySet %}
                             <option name="category" value="{{ category.name }}">{{ category.name }}</option>
                         {% endfor %}
@@ -36,7 +37,7 @@
                     <label for="">Date of Expense</label>
                     <input type="date" class="form-control" name="expense_date" value="{{ values.date }}" />
                 </div>
-                <input type="submit" value="Submit" class="btn btn-success" />
+                <input type="submit" value="Update" class="btn btn-info" />
             </form>    
         </div>    
     </div>
