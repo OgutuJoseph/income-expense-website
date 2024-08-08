@@ -8,7 +8,12 @@ from django.contrib import messages
 @login_required(login_url='authentication/login')
 def index(request):
     categories = Category.objects.all()
-    return render(request, 'expenses/index.html')
+    userExpenses = Expense.objects.filter(owner=request.user)
+    context = {
+        'categories': categories,
+        'userExpenses': userExpenses
+    }
+    return render(request, 'expenses/index.html', context)
 
 @login_required(login_url='authentication/login')
 def add_expense(request):
