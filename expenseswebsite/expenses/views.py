@@ -82,3 +82,10 @@ def edit_expense(request, id):
         expense.save()
         messages.success(request, 'Expense updated successfully.')
         return redirect('expensesUrl')
+
+@login_required(login_url='authentication/login')
+def delete_expense(request, id):
+    expense = Expense.objects.get(pk=id)
+    expense.delete()
+    messages.success(request, 'Expense deleted successfully.')
+    return redirect('expensesUrl')
