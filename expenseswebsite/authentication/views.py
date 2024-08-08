@@ -68,7 +68,7 @@ class RegistrationView(View):
                 
                 # Send confirmation email
                 email_subject = 'Activate your account'
-                email_body = 'Hi ' + user.username + 'Please use this link to verify your account. \n' + activate_url
+                email_body = 'Hi ' + user.username + '. Please use this link to verify your account. \n' + activate_url
 
                 email = EmailMessage(
                     email_subject,
