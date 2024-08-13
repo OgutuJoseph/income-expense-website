@@ -23,9 +23,11 @@
                         <input type="password" placeholder="Password" name="password" class="form-control form-control-sm" id="passwordField" />
                     </div>
     
-                    <input type="submit" value="Login" class="btn btn-block btn-info submit_btn" />
+                    <input type="submit" value="Login" class="btn btn-block btn-info submit_btn mt-3" />
                 </form>
             </div>
+            <span>Don't have an account? <a href="{% url 'registerUrl' %}">Register here.</a></span>
+            <span>Forgot password? <a href="{% url 'requestPasswordUrl' %}">Reset it here.</a></span>
         </div>
     </div>
     <div class="col-md-4">
