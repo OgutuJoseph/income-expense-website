@@ -218,6 +218,16 @@ class CompletePasswordReset(View):
             'uidb64': uidb64,
             'token': token
         }
+
+        try:
+            user_id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=user_id)
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                messages.info(request, 'Password reset token invlid. Please generate a new one.')             
+                return render(request, 'authentication/reset-password.html', context)
+        except Exception as ex:
+            pass
+
         return render(request, 'authentication/set-newpassword.html', context)
     
     def post(self, request, uidb64, token):
