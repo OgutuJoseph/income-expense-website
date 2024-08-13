@@ -235,7 +235,6 @@ class CompletePasswordReset(View):
             'uidb64': uidb64,
             'token': token
         }
-
         passwordInput = request.POST['password']
         passwordInput2 = request.POST['password2']
 
