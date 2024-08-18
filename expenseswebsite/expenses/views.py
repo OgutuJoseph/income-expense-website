@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 from userpreferences.models import UserPreference
+import datetime
 
 # Expenses views.
 
@@ -125,3 +126,36 @@ def search_expenses(request):
         data = expenses.values()
 
         return JsonResponse(list(data), safe=False)
+
+def stats_view(request):
+    return render(request, 'expenses/stats.html')
+
+def expense_category_summary(request):
+    today_date = datetime.date.today()
+    six_months_ago = today_date-datetime.timedelta(days=30*6)
+    expenses = Expense.objects.filter(date__gte=six_months_ago, date__lte=today_date, owner=request.user)
+
+    final_rep = {}
+
+    def get_category(expense):
+        return expense.category
+    category_list = list(set(map(get_category, expenses)))
+
+    def get_expense_category_amount(categoryToSearch):    
+        amount = 0
+        ''' -To return the expenses belonging to the passed category - '''
+        filtered_by_category = expenses.filter(category=categoryToSearch)
+
+        ''' -To increment (add on to) the initial zero amount with the sum totals for that category- '''
+        for item in filtered_by_category:
+            amount+=item.amount
+
+        return amount
+        
+    for x in expenses:
+        for y in category_list:
+            final_rep[y]=get_expense_category_amount(y)
+
+    return JsonResponse({
+        'expense_category_data': final_rep
+    }, safe=False)
