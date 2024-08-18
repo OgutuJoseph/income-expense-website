@@ -17,10 +17,20 @@ from .utils import token_generator
 from django.contrib import auth
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
+import threading
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 # Authentication views.
+
+class EmailThread(threading.Thread):
+    def __init__(self, email):
+        self.email = email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send(fail_silently=False)
 
 class RegistrationView(View):
     def get(self, request):
@@ -34,7 +44,7 @@ class RegistrationView(View):
 
         # Get User Data
         usernameInput = request.POST['username']
-        emailInput = request.POST['email']
+        email = request.POST['email']
         passwordInput = request.POST['password']
 
 
@@ -44,13 +54,13 @@ class RegistrationView(View):
 
         # Validate 
         if not User.objects.filter(username=usernameInput).exists():
-            if not User.objects.filter(email=emailInput).exists():
+            if not User.objects.filter(email=email).exists():
                 if len(passwordInput) < 6:
                     messages.error(request, 'Password too short.')
                     return render(request, 'authentication/register.html', context)
                 
                 # Create a user account
-                user = User.objects.create_user(username=usernameInput, email=emailInput)
+                user = User.objects.create_user(username=usernameInput, email=email)
                 user.set_password(passwordInput)
                 user.is_active = False
                 user.save()
@@ -75,15 +85,17 @@ class RegistrationView(View):
                     email_subject,
                     email_body,
                     'noreply@expenseswebsite.com',
-                    [emailInput]
+                    [email]
                 )
 
-                ''' Option W/O Logging '''
-                email.send(fail_silently=False)
+                # ''' Option W/O Logging '''
+                # email.send(fail_silently=False)
+                ''' Threading implementation '''
+                EmailThread(email).start()
 
                 
 
-                messages.success(request, 'User registered successfully.')
+                messages.success(request, 'User registered successfully. Please check activation email on mailbox.')
                 return render(request, 'authentication/register.html')
             else:
                 print("User exists.")
@@ -108,11 +120,11 @@ class UsernameValidationView(View):
 class EmailValidationView(View):
     def post(self, request):
         data=json.loads(request.body)
-        emailInput = data['email']
+        email = data['email']
 
-        if not validate_email(emailInput):
+        if not validate_email(email):
             return JsonResponse({'email_error': 'Email is invalid.'},status=400)
-        if User.objects.filter(email=emailInput).exists():
+        if User.objects.filter(email=email).exists():
             return JsonResponse({'email_error': 'Email already in use. Choose another one.'},status=409)
         return JsonResponse({'email_valid':True})
 
@@ -179,17 +191,17 @@ class RequestPasswordResetEmail(View):
         return render(request, 'authentication/reset-password.html')
     
     def post(self, request):
-        emailInput = request.POST['email']
+        email = request.POST['email']
         context = {
             'values': request.POST
         }
 
-        if not validate_email(emailInput):
+        if not validate_email(email):
             messages.error(request, 'Please supply a valid email.')
             return render(request, 'authentication/reset-password.html', context)
 
         current_site = get_current_site(request)
-        user = User.objects.filter(email=emailInput)
+        user = User.objects.filter(email=email)
         if user.exists():
             email_contents = {
                 'user': user[0],
@@ -204,13 +216,14 @@ class RequestPasswordResetEmail(View):
                     email_subject,
                     'Hi there, please use the link below to complete resettting your password: \n' + reset_url,
                     'noreply@expenseswebsite.com',
-                    [emailInput]
+                    [email]
                 )
-            email.send(fail_silently=False)
+            
+            # email.send(fail_silently=False)
+
+            ''' Threading implementation '''
+            EmailThread(email).start()
             messages.success(request, 'We have sent you an emal with password reset link.')
-
-
-        messages.success(request, 'We have sent you an emal with password reset link.')
 
 class CompletePasswordReset(View):
     def get(self, request, uidb64, token):
