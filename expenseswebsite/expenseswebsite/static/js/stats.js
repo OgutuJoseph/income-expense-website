@@ -29,15 +29,7 @@ const renderChat=(zenData, zenLabels) => {
     });
 }
 
-const getChartData = () => {
-    fetch('expense-category-summary')
-    .then(res=>res.json())
-    .then((results)=> {
-        console.log('chart data results here', results)
+const getChartData = () =>
 
-        renderChat([], [])
-    })
-}
-
-document.onload=getChartData()
+document.onload=getChartData
 
