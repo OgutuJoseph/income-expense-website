@@ -127,6 +127,9 @@ def search_expenses(request):
 
         return JsonResponse(list(data), safe=False)
 
+def stats_view(request):
+    return render(request, 'expenses/stats.html')
+
 def expense_category_summary(request):
     today_date = datetime.date.today()
     six_months_ago = today_date-datetime.timedelta(days=30*6)
