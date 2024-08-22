@@ -22,8 +22,11 @@
     <div class="card">
         {% if userExpenses %}
 
-            <div class="row">
-                <div class="col-md-9"></div>
+            <div class="row">                
+                <div class="col-md-3">
+                    <a href="{% url 'exportCSVUrl' %}" class="btn btn-info">Export to PDF</a>
+                </div>
+                <div class="col-md-6"></div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search" id="searchField" />
