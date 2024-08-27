@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=devise-width, initial-scale=1.0" />
+        <title>Zen Expenses | Expense Report</title>
+        <style>
+            @page {
+                size: "A4";
+                margin: 2.5cm 1.5cm 3.5cm 1.5cm;
+
+                @top-center {
+                    content: 'Zen Expenses Ltd.';
+                }
+
+                @bottom-right {
+                    content: "Page " counter(page) " of " counter(pages);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <img src="https://t4.ftcdn.net/jpg/01/11/94/71/360_F_111947179_ZIlKuzFxiOSJ7Ctl6PSQDMHA91RKVKDv.jpg" width="30px" height="30px" />
+        <h2>Expenses List</h2>
+        <table class="table">
+            <thead class="thead">
+                <tr>
+                    <th>No</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>{{ expense.date }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="4">Total</td>
+                    <td>{{ total }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

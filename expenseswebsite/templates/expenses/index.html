@@ -23,11 +23,12 @@
         {% if userExpenses %}
 
             <div class="row">                
-                <div class="col-md-3">
-                    <a href="{% url 'exportCSVUrl' %}" class="btn btn-info">Export to PDF</a>
+                <div class="col-md-6">
+                    <a href="{% url 'exportCSVUrl' %}" class="btn btn-dark">Export to CSV</a>
                     <a href="{% url 'exportExcelUrl' %}" class="btn btn-warning">Export to Excel</a>
+                    <a href="{% url 'exportPDFUrl' %}" class="btn btn-success">Export to PDF</a>
                 </div>
-                <div class="col-md-6"></div>
+                <div class="col-md-3"></div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search" id="searchField" />

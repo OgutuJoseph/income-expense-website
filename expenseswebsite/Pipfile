@@ -12,6 +12,9 @@ validate-email = "*"
 six = "*"
 xlwt = "*"
 openpyxl = "*"
+weasyprint = "*"
+cffi = "*"
+cairocffi = "*"
 
 [dev-packages]
 

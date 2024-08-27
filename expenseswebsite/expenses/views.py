@@ -8,8 +8,13 @@ from django.http import JsonResponse, HttpResponse
 from userpreferences.models import UserPreference
 import datetime
 import csv
-import xlwt
+# import xlwt
 from openpyxl import Workbook
+
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
 
 # Expenses views.
 
@@ -207,6 +212,7 @@ def export_excel(request):
 
     # wb.save(response)
     # return response
+    
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Expenses' + str(datetime.datetime.now()) + '.xlsx'
 
@@ -224,4 +230,45 @@ def export_excel(request):
         ws.append(row)
 
     wb.save(response)
+    return response
+
+def export_pdf(request):
+    # response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition']='inline; attachment; filename=Expenses'+str(datetime.datetime.now())+'.pdf'
+    # response['Content-Transfer-Encoding']='binary'
+
+    # html_string = render_to_string('expenses/pdf-output.html', {'expenses': [], 'total': 0})
+
+    # html = HTML(string=html_string)
+
+    # result = html.write_pdf()
+
+    # # to preview file in memory (read file in temporary mode) before you can e.g. print / download
+    # with tempfile.NamedTemporaryFile(delete=True) as output:
+    #     output.write(result)
+    #     output.flush()
+
+    #     output = open(output.name, 'rb')
+    #     response.write(output.read())
+    
+    # return response
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; attachment; filename="Expenses_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    expenses = Expense.objects.filter(owner=request.user)
+    expensesSum = expenses.aggregate(Sum('amount'))
+
+    # Render HTML template to string
+    # html_string = render_to_string('expenses/pdf-output.html', {'expenses': [], 'total': 0})
+    html_string = render_to_string('expenses/pdf-output.html', {'expenses':expenses, 'total': expensesSum['amount__sum']})
+    html = HTML(string=html_string)
+
+    # Generate PDF in memory
+    pdf_content = html.write_pdf()
+
+    # Write the PDF content to the response
+    response.write(pdf_content)
+
     return response
